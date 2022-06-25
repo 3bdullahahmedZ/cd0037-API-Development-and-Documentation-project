@@ -8,6 +8,7 @@ import random
 
 from models import setup_db, Question, Category
 
+
 QUESTIONS_PER_PAGE = 10
 
 
@@ -200,10 +201,11 @@ def create_app(test_config=None):
         body = request.get_json()
         previous_questions = body.get('previous_questions', None)
         category = body.get('quiz_category', None)
-        questions = Question.query.order_by(Question.id).filter(
-            Question.category == int(category['id']))
-        #formated = [question.format() for question in questions]
-        #questions = random.choice(formated)
+        if category is None:
+            questions = Question.query.order_by(Question.id).filter(
+                Question.category == int(category['id']))
+        else:
+            questions = Question.query.order_by(Question.id).all()
         new_questions = []
         for q in questions:
             if q.id not in previous_questions:
